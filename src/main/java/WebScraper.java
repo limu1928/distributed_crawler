@@ -1,71 +1,71 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class WebScraper {
-  private Set<String> visitedLinks;
-  private List<String> articles;
-  private int maxDepth;
+public class WebScraper  {
+  private Map<UUID, Set<String>> visitedLinks;
+  private final int maxDepth = 1;
 
-  public WebScraper(int depth) {
-    this.visitedLinks = new HashSet<>();
-    articles = new ArrayList<>();
-    this.maxDepth = depth;
+  public WebScraper() {
+    this.visitedLinks = new HashMap<>();
   }
 
-  public void crawl(String URL) {
-    getPageLinks(URL, 0);
-  }
 
-  private void getPageLinks(String URL, int depth) {
+  public Map<Integer, List<CrawlTask>> getPageLinks(UUID taskId, String URL, String keyword, int depth) {
     boolean keepCrawl = false;
     synchronized (visitedLinks) {
-      if (!visitedLinks.contains(URL) && depth <= this.maxDepth) {
+      Set<String> visited = visitedLinks.get(taskId);
+      if (visited == null) visitedLinks.put(taskId, new HashSet<>());
+      if (!visitedLinks.get(taskId).contains(URL) && depth <= this.maxDepth) {
         System.out.println(URL);
         keepCrawl = true;
-        visitedLinks.add(URL);
+        visitedLinks.get(taskId).add(URL);
       }
     }
+    Map<Integer, List<CrawlTask>> result = new HashMap<>();
     if (keepCrawl) {
       try {
         Document doc = Jsoup.connect(URL).get();
         Elements childLinks = doc.select("a[href]");
         for (Element page : childLinks) {
-          getPageLinks(page.attr("abs:href"), depth+1);
+          String link = page.attr("abs:href");
+          result.computeIfAbsent(link.hashCode() % 5,
+              k -> new ArrayList<CrawlTask>()).add(new CrawlTask(taskId, URL, keyword, depth+1));
         }
-
       } catch (Exception ex) {
         System.out.print(URL + ": " + ex.getMessage());
       }
     }
+    return result;
   }
 
 
-  public void getArticles(String pattern) {
-    for (String link : visitedLinks) {
-      try {
-        Document doc = Jsoup.connect(link).get();
-        if (doc.text().matches(pattern)) {
-          this.articles.add(doc.text());
-          System.out.println(doc.text().substring(0,Math.min(doc.text().length(), 50)) + "..." + "   " + link);
-        }
-      } catch (Exception ex) {
-        System.out.println(link + ": " + ex.getMessage());
-      }
+  public String getArticles(String URL, String pattern) {
+    String result =  null;
+    try {
+      Document doc = Jsoup.connect(URL).get();
+      if (doc.text().matches(pattern))
+        result = doc.text().substring(0,Math.min(doc.text().length(), 50)) + "...";
+    } catch (Exception ex) {
+      System.out.println(URL + ": " + ex.getMessage());
     }
+    return result;
   }
 
-  public static void main(String[] args) {
-    String keyword = "Sean Lew";
-    WebScraper scraper = new WebScraper(1);
-    scraper.crawl("https://kiddancers.fandom.com/wiki/Sean_Lew");
-    System.out.println("###################################################");
-    scraper.getArticles(".*" + keyword + ".*");
-  }
+//  public static void main(String[] args) {
+//    String keyword = "Sean Lew";
+//    WebScraper scraper = new WebScraper();
+//    scraper.singleURLCrawl("https://kiddancers.fandom.com/wiki/Sean_Lew");
+//    System.out.println("###################################################");
+//    scraper.getArticles(".*" + keyword + ".*");
+//  }
 
 }
