@@ -12,6 +12,8 @@ public class ScraperAgent implements CrawlerService  {
   private int scraperId;
   private CrawlerService[] agents;
   private WebScraper scraper;
+
+
   private static final int[] PORTS = {4000,4001, 4002, 4003, 4004};
   private BlockingQueue<CrawlTask> queue;
 //  TODO:
@@ -84,6 +86,12 @@ public class ScraperAgent implements CrawlerService  {
     for (CrawlTask task : tasks) {
       this.queue.add(task);
     }
+  }
+
+  @Override
+  public Map<String, String> retrieveResult(UUID taskId) throws RemoteException {
+    //TODO: call the database to retrieve the result for request with given taskId
+    return  null;
   }
 
   private void dispatch(Map<Integer, List<CrawlTask>> map) {
