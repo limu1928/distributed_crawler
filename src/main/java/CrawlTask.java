@@ -13,5 +13,11 @@ public class CrawlTask implements Serializable {
     this.keyword = keyword;
     this.depth = depth;
   }
+  
+  public CrawlTask(UUID taskId, String URL, String keyword) {
+	    this.taskId = taskId;
+	    this.URL = URL;
+	    this.keyword = keyword;
+	  }
 
 }
