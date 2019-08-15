@@ -85,3 +85,17 @@ Crawler communicate with the Database. Since we are using PAXOS
 among the servers, it's very troublesome to use low-level API
 to implement it. By defining corresponding interfaces, the whole
 process is being simpler and more robust.
+
+## How to Run
+### Client
+To start a new client instance, you may want to run the main
+method in the file `Client.java`\
+Arguments are not necessary for launching a client instance.
+### Server
+Server is launched through running the main methods in the file
+`Scraper.java`\
+We currently set the number of servers as 5.\
+The main method calling convention is:\
+```ScraperAgent <index>```\
+Index argument indicates the index of server to be launched.
+The index range from 0 to 4.
