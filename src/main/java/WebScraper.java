@@ -60,12 +60,5 @@ public class WebScraper  {
     return result;
   }
 
-//  public static void main(String[] args) {
-//    String keyword = "Sean Lew";
-//    WebScraper scraper = new WebScraper();
-//    scraper.singleURLCrawl("https://kiddancers.fandom.com/wiki/Sean_Lew");
-//    System.out.println("###################################################");
-//    scraper.getArticles(".*" + keyword + ".*");
-//  }
 
 }

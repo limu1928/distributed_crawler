@@ -24,6 +24,7 @@ public class ScraperAgent implements CrawlerService  {
     this.scraperId = id;
     this.scraper = new WebScraper();
     this.queue = new ArrayBlockingQueue(1000);
+    this.agents = new CrawlerService[PORTS.length];
     //TODO:
     //this.database = new Database;
   }
@@ -36,9 +37,13 @@ public class ScraperAgent implements CrawlerService  {
       registry.rebind("scraperAgent" + scraperId, stub);
       int ind = 0;
       while(ind < PORTS.length) {
-        Registry tempRegistry = LocateRegistry.getRegistry(PORTS[ind]);
-        CrawlerService agent = (CrawlerService) tempRegistry.lookup("scraperAgent" + ind);
-        this.agents[ind] = agent;
+        try {
+          Registry tempRegistry = LocateRegistry.getRegistry(PORTS[ind]);
+          CrawlerService agent = (CrawlerService) tempRegistry.lookup("scraperAgent" + ind);
+          this.agents[ind] = agent;
+          ind ++;
+        } catch (Exception ex) {
+        }
       }
 
       /** TODO: find the databse for rmi
@@ -67,7 +72,9 @@ public class ScraperAgent implements CrawlerService  {
             }
           }
         }).start();
+
       }
+      System.out.println("Agent" + scraperId + " is running!");
 
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -102,6 +109,13 @@ public class ScraperAgent implements CrawlerService  {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
+
+  }
+
+  public static void main(String[] args) {
+    int ind = Integer.parseInt(args[0]);
+    ScraperAgent agent = new ScraperAgent(ind);
+    agent.configure();
 
   }
 }
