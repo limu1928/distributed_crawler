@@ -1,19 +1,19 @@
 # Final Project: Distributed Crawler
 ## Project Overview
-Distributed Crawler is an application that provide crawler
+Distributed Crawler is an application that provides crawler
 service to the client. \
 On the client side, the client is asked to provide the URL
-of the target web page and it will receive the crawl result from
-this Service. \
+of the target web page to the agent. It will receive the crawl 
+result from the agent server. \
 On the server side, once one of the servers receives the request
-from the client, it will initially decide which server to work on
-this task. During the crawling process, there will be some
+from the client, it will initially decide which server will work 
+on this task. During the crawling process, there will be some
 algorithms be applied to solve collision and failures. Finally
 the result will be returned to the client.
 
 ## Project Breakdown
-The distributed crawler is consisted of two components: crawler 
-and storage. If we view this project as a 
+The distributed crawler is consisted of two components: `crawler` 
+and `storage`. If we view this project as a 
 producer-consumer pattern application, the workflow of the 
 project would be:
 1. Crawler produces the crawl result.
@@ -69,5 +69,19 @@ making the client to call `Crawl` and `RetrieveResult`
 separately, by which I believe the client can optimize the
 waiting process by creating threads for making request and
 retrieving result separately. However, it may also make the
-transaction more complicated compared with returing the
+transaction more complicated compared with returning the
 crawl result in the `Crawl` call.
+
+### RMI
+During the development of this project, the RMI framework helped
+us simplify the transactions between clients and save much time
+from dealing with inter-servers transactions.\
+In the model we designed for distributed crawler, the client is
+not going to get involved in crawling process. By using the RMI
+framework, we disguise the details of our workflow by only 
+providing interfaces like `singleURLCrawl` and `retrieveResult`.
+On the server side, we are also using RMI framework to help the
+Crawler communicate with the Database. Since we are using PAXOS
+among the servers, it's very troublesome to use low-level API
+to implement it. By defining corresponding interfaces, the whole
+process is being simpler and more robust.
