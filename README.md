@@ -89,13 +89,17 @@ process is being simpler and more robust.
 ## How to Run
 ### Client
 To start a new client instance, you may want to run the main
-method in the file `Client.java`\
-Arguments are not necessary for launching a client instance.
+method in the file `Client.java`.\
+The number of arguments the main method expecting is 1.\
+Calling convention:\
+```java Client <index>```
+Index indicates the index of the client.
 ### Server
-Server is launched through running the main methods in the file
-`Scraper.java`\
-We currently set the number of servers as 5.\
-The main method calling convention is:\
+Server is launched through running the main method in the file
+`Scraper.java`.\
+The number of arguments the main method expecting is 1.\
+Calling convention:\
 ```ScraperAgent <index>```\
 Index argument indicates the index of server to be launched.
-The index range from 0 to 4.
+We currently set the number of servers as 5, so the indexes 
+range from 0 to 4.
