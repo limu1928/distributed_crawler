@@ -12,7 +12,7 @@ import org.jsoup.select.Elements;
 
 public class WebScraper  {
   private Map<UUID, Set<String>> visitedLinks;
-  private final int maxDepth = 1;
+  private final int maxDepth = 0;
 
   public WebScraper() {
     this.visitedLinks = new HashMap<>();
